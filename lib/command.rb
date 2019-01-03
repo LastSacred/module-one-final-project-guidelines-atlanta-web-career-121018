@@ -4,6 +4,10 @@ class Command
     welcome
     main
   end
+
+  def welcome
+    puts "Welcome to Main Workout!"
+  end
   #everytime we run, we make a new Command instance that runs CLI
     # start
 
@@ -44,7 +48,7 @@ class Command
 
               # (2) "Delete Exercise from Workout"
                 # *User types in '2'
-                  # "Select Exercise from #{workout.name} to Delete" (list_exercises_by_category(workout, user_integer))
+                  # "Select Exercise from #{@workouts[input-1].name} to Delete" (list_exercises_by_category(workout, user_integer))
                   # 1. ...
                   # 2. ...
                   # 3. ...
@@ -116,41 +120,27 @@ class Command
 
 
   def list_groups
+    puts "Select Muscle Group from List:"
     Group.all.each_with_index do |t,i|
       puts "#{i+1}. #{t.name}"
     end
   end
 
-  # def list_exercises_by_group(groups,int)
-  #   index = int - 1
-  #   exercises = groups[index].exercises
-  #   exercises.each_with_index do |t,i|
-  #     puts "#{i+1}. #{t.name}"
-  #   end
-  #   exercises
-  # end
 
   def list_workouts
+    puts "Your Current Workouts:"
     Workout.all.each_with_index do |t,i|
       puts "#{i+1}. #{t.name}"
     end
   end
 
-  # def list_exercises_by_workout(workouts,int)
-  #   index = int - 1
-  #   exercises = workouts[index].exercises
-  #   exercises.each_with_index do |t,i|
-  #     puts "#{i+1}. #{t.name}"
-  #   end
-  #   exercises
-  # end
-
 #combined list_exercises_by_group and list_exercises_by_workout below
-  def list_exercises_by_category(array,int)
-    index = int - 1
-    array[index].exercises.each_with_index do |t,i|
+  def list_exercises_by_object(object)
+    object.exercises.each_with_index do |t,i|
       puts "#{i+1}. #{t.name}"
     end
+  end
+
   def assign_day(workout, day)
     workout.day = day
   end
@@ -159,17 +149,11 @@ class Command
     Workout.create(name: name)
   end
 
-  def add_exercise(exercises, ex_int, workouts, wo_int)
-    exercise = exercises[ex_int - 1]
-    workout = workouts[wo_int - 1]
-
+  def add_exercise(exercise, workout)
     WorkoutExercise.create(exercise_id: exercise.id, workout_id: workout.id)
   end
 
-  def del_exercise(exercise, ex_int, workout, wo_int)
-    exercise = exercises[ex_int - 1]
-    workout = workouts[wo_int - 1]
-
+  def del_exercise(exercise, workout)
     WorkoutExercise.find_by(exercise_id: exercise.id, workout_id: workout.id).destroy
   end
 
