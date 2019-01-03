@@ -1,6 +1,7 @@
 class Command
 
   def initialize
+    
   end
   #everytime we run, we make a new Command instance that runs CLI
     # start
