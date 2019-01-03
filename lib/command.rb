@@ -114,7 +114,7 @@ class Command
                         # "#{workout.name}: "
                         # "Type in Day"
                           # *user types in string*
-                            # (assign_day(user_int, workouts, user_string))
+                            # (assign_day(workout, user_string))
                               # RETURNS TO VIEW/EDIT PROMPT
 
 
