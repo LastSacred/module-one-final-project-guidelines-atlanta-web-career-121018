@@ -158,64 +158,119 @@ class Command
   end
 
   def main_options
-    puts ""
-    puts "1. View or edit existing workout"
-    puts "2. Create new workout"
+    loop do
+      @workouts = list_workouts
 
-    input = gets.strip
-
-    case input
-    when "1"
       puts ""
-      puts "Select a workout"
+      puts "1. View or edit existing workout"
+      puts "2. Create new workout"
 
       input = gets.strip
-      @workout = @workouts[input.to_i - 1]
-
-      puts ""
-      puts "Exercises in #{@workout.name}"
-
-      @workout_exercises = list_exercises_by_object(@workout)
-
-      puts ""
-      puts "1. Add exercise to workout"
-      puts "2. Delete exercise from workout"
-
-      input = gets.strip
+      exit if input == "exit"
 
       case input
       when "1"
-        @groups = list_groups
+        puts ""
+        puts "Select a workout"
 
         input = gets.strip
-
-        @group = @groups[input.to_i - 1]
+        exit if input == "exit"
+        @workout = @workouts[input.to_i - 1]
 
         puts ""
-        puts "Select exercise:"
+        puts "Exercises in #{@workout.name}"
+        puts @workout.day
 
-        @group_exercises = list_exercises_by_object(@group)
+        @workout_exercises = list_exercises_by_object(@workout)
+
+        puts ""
+        puts "1. Add exercise to workout"
+        puts "2. Delete exercise from workout"
+        puts "3. Assign day to workout"
 
         input = gets.strip
+        break if input == "back"
+        exit if input == "exit"
 
-        @exercise = @group_exercises[input.to_i - 1]
+        case input
+        when "1"
+          loop do
+            @groups = list_groups
 
-        add_exercise(@exercise, @workout)
+            input = gets.strip
+            break if input == "back"
+            exit if input == "exit"
+
+            @group = @groups[input.to_i - 1]
+
+            puts ""
+            puts "Select exercise to add"
+
+            @group_exercises = list_exercises_by_object(@group)
+
+            input = gets.strip
+            break if input == "back"
+            exit if input == "exit"
+
+            @exercise = @group_exercises[input.to_i - 1]
+
+            add_exercise(@exercise, @workout)
+            @workout = Workout.find(@workout.id)
+
+            @workout_exercises = list_exercises_by_object(@workout)
+          end
+        when "2"
+          loop do
+            puts ""
+            puts "Select exercise to delete"
+
+            input = gets.strip
+            break if input == "back"
+            exit if input == "exit"
+
+            @exercise = @workout_exercises[input.to_i - 1]
+
+            del_exercise(@exercise, @workout)
+            @workout = Workout.find(@workout.id)
+
+            @workout_exercises = list_exercises_by_object(@workout)
+          end
+        when "3"
+          puts ""
+          puts "Enter day"
+
+          input = gets.strip
+          break if input == "back"
+          exit if input == "exit"
+
+          assign_day(@workout, input)
+
+          @workout = Workout.find(@workout.id)
+
+          puts ""
+          puts @workout.name
+          puts @workout.day
+        else
+          puts ""
+          puts "Invalid selection"
+        end
       when "2"
+        puts ""
+        puts "What would you like to name this workout?"
+
+        input = gets.strip
+        break if input == "back"
+        eixt if input == "exit"
+
+        create_workout(input)
       else
         puts ""
         puts "Invalid selection"
       end
-    when "2"
-
-    else
-      puts ""
-      puts "Invalid selection"
     end
   end
 
   def main
-    @workouts = list_workouts
     main_options
   end
 
