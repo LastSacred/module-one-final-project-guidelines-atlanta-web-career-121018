@@ -1,7 +1,8 @@
 class Command
 
   def initialize
-    
+    welcome
+    main
   end
   #everytime we run, we make a new Command instance that runs CLI
     # start
@@ -170,6 +171,69 @@ class Command
     workout = workouts[wo_int - 1]
 
     WorkoutExercise.find_by(exercise_id: exercise.id, workout_id: workout.id).destroy
+  end
+
+  def main_options
+    puts ""
+    puts "1. View or edit existing workout"
+    puts "2. Create new workout"
+
+    input = gets.strip
+
+    case input
+    when "1"
+      puts ""
+      puts "Select a workout"
+
+      input = gets.strip
+
+      @workout = @workouts[input - 1]
+
+      puts ""
+      puts "Exercises in #{@workout.name}"
+
+      @workout_exercises = list_exercises_by_object(@workout)
+
+      puts ""
+      puts "1. Add exercise to workout"
+      puts "2. Delete exercise from workout"
+
+      input = gets.strip
+
+      case input
+      when "1"
+        @groups = list_groups
+
+        input = gets.strip
+
+        @group = @groups[input - 1]
+
+        puts ""
+        puts "Select exercise:"
+
+        @group_exercises = list_exercises_by_object(@group)
+
+        input = gets.strip
+
+        @exercise = @group_exercises[input - 1]
+
+        add_exercise(@exercise, @workout)
+      when "2"
+      else
+        puts ""
+        puts "Invalid selection"
+      end
+    when "2"
+
+    else
+      puts ""
+      puts "Invalid selection"
+    end
+  end
+
+  def main
+    @workouts = list_workouts
+    main_options
   end
 
 end
