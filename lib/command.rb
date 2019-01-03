@@ -170,8 +170,7 @@ class Command
       puts "Select a workout"
 
       input = gets.strip
-
-      @workout = @workouts[input - 1]
+      @workout = @workouts[input.to_i - 1]
 
       puts ""
       puts "Exercises in #{@workout.name}"
@@ -190,7 +189,7 @@ class Command
 
         input = gets.strip
 
-        @group = @groups[input - 1]
+        @group = @groups[input.to_i - 1]
 
         puts ""
         puts "Select exercise:"
@@ -199,7 +198,7 @@ class Command
 
         input = gets.strip
 
-        @exercise = @group_exercises[input - 1]
+        @exercise = @group_exercises[input.to_i - 1]
 
         add_exercise(@exercise, @workout)
       when "2"
