@@ -1,148 +1,44 @@
 class Command
 
+#INITIALIZE
   def initialize
     welcome
     main
   end
 
+
+#HELPER METHODS
   def welcome
+    puts ""
     puts "Welcome to Main Workout!"
   end
-  #everytime we run, we make a new Command instance that runs CLI
-    # start
-
-    # welcome message
-    # "Your Current Workouts" (list_workouts)
-    # 1. ...
-    # 2. ...
-    # 3. ...
-    # "OPTIONS"
-
-    # (1) View or Edit Existing Workout
-      # *User types in '1'*
-        # "Select Workout from List" (list_workouts)
-        # 1. ...
-        # 2. ...
-        # 3. ...
-          # *User types in integer*
-            # "Exercises from #{workout.name}" (list_exercises_by_category(workout, user_integer))
-              # 1. ...
-              # 2. ...
-              # 3. ...
-              # "OPTIONS"
-
-              # (1) "Add Exercise to Workout"
-                # *User types in '1'
-                  # "Select Muscle Group from List" (list_groups)
-                  # 1. ...
-                  # 2. ...
-                  # 3. ...
-                    # *User types in integer*
-                      # "Select Exercise from List" (list_exercises_by_category(group, user_integer))
-                      # 1. ...
-                      # 2. ...
-                      # 3. ...
-                        # *User types in integer*
-                          # (add_exercise(exercises, ex_int, workouts, wo_int))
-                            # RETURNS TO VIEW/EDIT PROMPT
-
-              # (2) "Delete Exercise from Workout"
-                # *User types in '2'
-                  # "Select Exercise from #{@workouts[input-1].name} to Delete" (list_exercises_by_category(workout, user_integer))
-                  # 1. ...
-                  # 2. ...
-                  # 3. ...
-                    # *User types in integer*
-                      # (del_exercise(exercises, ex_int, workouts, wo_int))
-                        # RETURNS TO VIEW/EDIT PROMPT
-
-              # (3) "Assign Day to Workout"
-                # *User types in '3'
-                  # "Select Workout from List" (list_workouts)
-                  # 1. ...
-                  # 2. ...
-                  # 3. ...
-                    # *User types in integer*
-                      # "#{workout.name}: "
-                      # "Type in Day"
-                        # *User types in string*
-                          # (assign_day(user_int, workouts, user_string))
-                            # RETURNS TO VIEW/EDIT PROMPT
-
-    # (2) Create New Workout
-      # *User types in '2'*
-        # "What would you like to name this workout?"
-          # *User types in string*
-            # (create_workout(user_string))
-
-              # "Exercises from #{workout.name}" (list_exercises_by_category(workout, user_integer))
-                # 1. ...
-                # 2. ...
-                # 3. ...
-                # "OPTIONS"
-
-                # (1) "Add Exercise to Workout"
-                  # *User types in '1'
-                    # "Select Muscle Group from List" (list_groups)
-                    # 1. ...
-                    # 2. ...
-                    # 3. ...
-                      # *User types in integer*
-                        # "Select Exercise from List" (list_exercises_by_category(group, user_integer))
-                        # 1. ...
-                        # 2. ...
-                        # 3. ...
-                          # *User types in integer*
-                            # (add_exercise(exercises, ex_int, workouts, wo_int))
-                              # RETURNS TO VIEW/EDIT PROMPT
-                # (2) "Delete Exercise from Workout"
-                  # *User types in '2'
-                    # "Select Exercise from #{workout.name} to Delete" (list_exercises_by_category(workout, user_integer))
-                    # 1. ...
-                    # 2. ...
-                    # 3. ...
-                      # *User types in integer*
-                        # (del_exercise(exercises, ex_int, workouts, wo_int))
-                          # RETURNS TO VIEW/EDIT PROMPT
-                # (3) "Assign Day to Workout"
-                  # *User types in '3'
-                    # "Select Workout from List" (list_workouts)
-                    # 1. ...
-                    # 2. ...
-                    # 3. ...
-                      # *User types in integer*
-                        # "#{workout.name}: "
-                        # "Type in Day"
-                          # *user types in string*
-                            # (assign_day(user_int, workouts, user_string))
-                              # RETURNS TO VIEW/EDIT PROMPT
-
-
 
   def list_groups
-    puts "Select Muscle Group from List:"
+    puts ""
+    puts "SELECT MUSCLE GROUP FROM LIST:"
     Group.all.each_with_index do |t,i|
-      puts "#{i+1}. #{t.name}"
+      puts "  #{i+1}. #{t.name}"
     end
   end
-
 
   def list_workouts
+    puts ""
+    puts "MAIN MENU"
     puts "Your Current Workouts:"
     Workout.all.each_with_index do |t,i|
-      puts "#{i+1}. #{t.name}"
+      puts "  #{i+1}. #{t.name}"
     end
   end
 
-#combined list_exercises_by_group and list_exercises_by_workout below
   def list_exercises_by_object(object)
     object.exercises.each_with_index do |t,i|
-      puts "#{i+1}. #{t.name}"
+      puts "  #{i+1}. #{t.name}"
     end
   end
 
   def assign_day(workout, day)
     workout.day = day
+    workout.save
   end
 
   def create_workout(name)
@@ -158,120 +54,159 @@ class Command
   end
 
   def main_options
-    loop do
-      @workouts = list_workouts
-
+    @workouts = list_workouts
       puts ""
-      puts "1. View or edit existing workout"
-      puts "2. Create new workout"
-
-      input = gets.strip
-      exit if input == "exit"
-
-      case input
-      when "1"
-        puts ""
-        puts "Select a workout"
-
-        input = gets.strip
-        exit if input == "exit"
-        @workout = @workouts[input.to_i - 1]
-
-        puts ""
-        puts "Exercises in #{@workout.name}"
-        puts @workout.day
-
-        @workout_exercises = list_exercises_by_object(@workout)
-
-        puts ""
-        puts "1. Add exercise to workout"
-        puts "2. Delete exercise from workout"
-        puts "3. Assign day to workout"
-
-        input = gets.strip
-        break if input == "back"
-        exit if input == "exit"
-
-        case input
-        when "1"
-          loop do
-            @groups = list_groups
-
-            input = gets.strip
-            break if input == "back"
-            exit if input == "exit"
-
-            @group = @groups[input.to_i - 1]
-
-            puts ""
-            puts "Select exercise to add"
-
-            @group_exercises = list_exercises_by_object(@group)
-
-            input = gets.strip
-            break if input == "back"
-            exit if input == "exit"
-
-            @exercise = @group_exercises[input.to_i - 1]
-
-            add_exercise(@exercise, @workout)
-            @workout = Workout.find(@workout.id)
-
-            @workout_exercises = list_exercises_by_object(@workout)
-          end
-        when "2"
-          loop do
-            puts ""
-            puts "Select exercise to delete"
-
-            input = gets.strip
-            break if input == "back"
-            exit if input == "exit"
-
-            @exercise = @workout_exercises[input.to_i - 1]
-
-            del_exercise(@exercise, @workout)
-            @workout = Workout.find(@workout.id)
-
-            @workout_exercises = list_exercises_by_object(@workout)
-          end
-        when "3"
-          puts ""
-          puts "Enter day"
-
-          input = gets.strip
-          break if input == "back"
-          exit if input == "exit"
-
-          assign_day(@workout, input)
-
-          @workout = Workout.find(@workout.id)
-
-          puts ""
-          puts @workout.name
-          puts @workout.day
-        else
-          puts ""
-          puts "Invalid selection"
-        end
-      when "2"
-        puts ""
-        puts "What would you like to name this workout?"
-
-        input = gets.strip
-        break if input == "back"
-        eixt if input == "exit"
-
-        create_workout(input)
-      else
-        puts ""
-        puts "Invalid selection"
-      end
-    end
+      puts "SELECT FROM THE FOLLOWING OPTIONS:"
+      puts "  (1) View or Edit Existing Workout"
+      puts "  (2) Create New Workout"
+      puts ""
+    input = gets.strip
   end
 
+  def grab_workout
+      puts ""
+      puts "SELECT A WORKOUT"
+      puts "Your Current Workouts:"
+      Workout.all.each_with_index do |t,i|
+        puts "  #{i+1}. #{t.name}"
+      end
+      puts ""
+    input = gets.strip
+  end
+
+  def add_delete_assign(input)
+    @workout = @workouts[input.to_i - 1]
+      puts ""
+      puts "Exercises in #{@workout.name} (#{@workout.day}):"
+    @workout_exercises = list_exercises_by_object(@workout)
+      puts ""
+      puts "SELECT FROM THE FOLLOWING OPTIONS:"
+      puts "  (1) Add Exercise to Workout"
+      puts "  (2) Delete Exercise from Workout"
+      puts "  (3) Assign Day to Workout"
+      puts ""
+    input = gets.strip
+  end
+
+  def grab_group
+    @groups = list_groups
+    puts ""
+    input = gets.strip
+  end
+
+  def grab_exercise(input)
+    @group = @groups[input.to_i - 1]
+      puts ""
+      puts "SELECT EXERCISE TO ADD:"
+    @group_exercises = list_exercises_by_object(@group)
+      puts ""
+    input = gets.strip
+  end
+
+  def add_for_user(input)
+    @exercise = @group_exercises[input.to_i - 1]
+    add_exercise(@exercise, @workout)
+    @workout = Workout.find(@workout.id)
+      puts ""
+      puts "Exercises in #{@workout.name}:"
+    @workout_exercises = list_exercises_by_object(@workout)
+  end
+
+  def grab_to_delete
+      puts ""
+      puts "SELECT EXERCISE TO DELETE:"
+      puts ""
+    input = gets.strip
+  end
+
+  def delete_for_user(input)
+    @exercise = @workout_exercises[input.to_i - 1]
+    del_exercise(@exercise, @workout)
+    @workout = Workout.find(@workout.id)
+    puts "Exercises in #{@workout.name}:"
+    @workout_exercises = list_exercises_by_object(@workout)
+  end
+
+  def grab_day
+      puts ""
+      puts "ENTER DAY"
+      puts ""
+    input = gets.strip
+  end
+
+  def assign_for_user(input)
+    assign_day(@workout, input)
+    @workout = Workout.find(@workout.id)
+      puts ""
+      puts "#{@workout.name} now assigned to #{@workout.day}"
+  end
+
+  def invalid_selection
+    puts ""
+    puts "INVALID SELECTION"
+  end
+
+  def grab_new_wo
+      puts ""
+      puts "ENTER NAME OF WORKOUT"
+      puts ""
+    input = gets.strip
+  end
+
+
+#COMMAND LINE INTERFACE
   def main
-    main_options
+    loop do
+      input1 = main_options
+      case input1
+      when "exit"
+        exit
+      when "1" #View/Edit Workout
+        loop do
+          input2 = grab_workout
+          break if input2 == "back"
+          exit if input2 == "exit"
+          input3 = add_delete_assign(input2)
+          case input3
+          when "exit"
+            exit
+          when "back"
+            break
+          when "1" #add exercise to workout
+            loop do
+              input4 = grab_group
+                break if input4 == "back"
+                exit if input4 == "exit"
+              input5 = grab_exercise(input4)
+                break if input5 == "back"
+                exit if input5 == "exit"
+              add_for_user(input5)
+            end
+          when "2" #delete exercise from workout
+            loop do
+              input6 = grab_to_delete
+                break if input6 == "back"
+                exit if input6 == "exit"
+              delete_for_user(input6)
+            end
+          when "3" #assign day to workout
+            input7 = grab_day
+              break if input7 == "back"
+              exit if input7 == "exit"
+            assign_for_user(input7)
+          else
+            invalid_selection
+          end
+        end
+      when "2" #Create new workout
+        input8 = grab_new_wo
+          next if input8 == "back"
+          exit if input8 == "exit"
+        create_workout(input8)
+      else
+        invalid_selection
+      end
+    end
   end
 
 end
