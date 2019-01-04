@@ -10,7 +10,7 @@ class Command
 #HELPER METHODS
   def welcome
     puts ""
-    puts "Welcome to Main Workout!"
+    puts "Welcome to Workout Builder!"
   end
 
   def list_groups
